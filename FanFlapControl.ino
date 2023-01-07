@@ -11,17 +11,25 @@
 */
 
 #include <Servo.h>
-#define pinFan    5 //D1
-#define pinServo  4 //D2
-#define pinPower 14 //D5
+#define pinFanLed 5  //D1
+#define pinServo 4   //D2
+#define pinPower 14  //D5
 int lastState = -1;
-unsigned long lastMillis;
-unsigned long onDuration = 1000; //ms => 2 sec  
+int flapState = -1;
+unsigned long triggerMillis = 0;  //set everytime the pinFanLed is LOW (LED on fan turned on)
+unsigned long lastMillis = 0;
+unsigned long onDuration = 1000;                 //ms => 1 sec
+unsigned long detectOffTimeout = 500;            //ms
+unsigned long trailingDuration = 5 * 60 * 1000;  //ms => 5 min
 
-Servo myServo; 
+Servo myServo;
 
 #include <OTA.h>
 #include <credentials.h>
+
+#define LED_ON LOW  //pinFanLed pulled low
+#define CLOSE 0
+#define OPEN 1
 
 void setup() {
   Serial.begin(115200);
@@ -30,33 +38,42 @@ void setup() {
   setupOTA("FanFlapControl", mySSID, myPASSWORD);
 
   // Your setup code
-  myServo.attach(pinServo); 
+  myServo.attach(pinServo);
   Serial.begin(115200);
-  pinMode(pinFan, INPUT_PULLUP);
-  pinMode(pinPower, OUTPUT); //in order to save power when 
-  lastMillis = millis();  
+  pinMode(pinFanLed, INPUT_PULLUP);
+  pinMode(pinPower, OUTPUT);  //in order to save power when
+  lastMillis = millis();
 }
 
 void loop() {
   ArduinoOTA.handle();
   // Your code here
-  int nowState = digitalRead(pinFan);
-  if(nowState != lastState){
-    lastState = nowState;
-    lastMillis = millis(); //reset timer
-    Serial.println("Turning power on");
-    digitalWrite(pinPower, HIGH); //turn power on
+  int fanLedState = digitalRead(pinFanLed);
+  unsigned long now = millis();
+  if (fanLedState == LED_ON) {
+    triggerMillis = now;
+    flapState = OPEN;
   }
-  if(millis()-lastMillis < onDuration){
-    if(digitalRead(pinFan) == HIGH){
-      myServo.write(180);
-    } else {  
-      myServo.write(0);  
+  if ((now - triggerMillis) > detectOffTimeout) {  //if there was no more on pulse since a while => fan is off => close the lid
+//    Serial.println("now (" + String(now) + ") - triggerMillis (" + triggerMillis + " > detectOffTimeout (" + detectOffTimeout + ")");
+    flapState = CLOSE;
+  }
+  if (flapState != lastState) {
+    Serial.println("flapState = " + String(flapState));
+    lastState = flapState;
+    lastMillis = now;  //reset timer
+    Serial.println("Turning power on");
+    digitalWrite(pinPower, HIGH);  //turn power on
+  }
+  if ((now - lastMillis) < onDuration) {
+    if (flapState == CLOSE) {
+      myServo.write(180);  //close flap
+    } else {
+      myServo.write(0);  //open flap
     }
   } else {
-    Serial.println("Turning power off"); 
-    digitalWrite(pinPower, LOW); //turn power off 
+    if(digitalRead(pinPower) != LOW){ Serial.println("Turning power off");}
+    digitalWrite(pinPower, LOW);  //turn power off
   }
-//  delay(100);
-
+  //  delay(100);
 }
