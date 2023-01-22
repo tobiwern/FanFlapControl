@@ -2,7 +2,7 @@ var pictures = ["flap0.png", "flap45.png", "flap90.png", "flap135.png", "flap180
 var gUpdateIntervalInMiliSec = 1000;
 var index = 0;
 var direction = -1;
-var basePath = "https://github.com/tobiwern/FanFlapControl/blob/main"
+var basePath = "https://tobiwern.github.io/FanFlapControl"
 setInterval(updatePicture, 150);
 preloadImages();
 

@@ -9,6 +9,16 @@
 #include <ESP8266WebServer.h>
 ESP8266WebServer server(80);
 
+void notFound() {
+  Serial.println("Not found");
+  server.send(404, "text/plain", "Not found");
+}
+
+void handleRoot() {
+  String s = webpage;
+  server.send(200, "text/html", s);
+}
+
 void sendSettingsToWebpage() {  //transferring ESP settings => Webpage
   String value;
   if(flapState == CLOSE){
@@ -18,16 +28,6 @@ void sendSettingsToWebpage() {  //transferring ESP settings => Webpage
   }
   Serial.println("Sending settings: " + value);
   server.send(200, "text/plane", value);
-}
-
-void notFound() {
-  Serial.println("Not found");
-  server.send(404, "text/plain", "Not found");
-}
-
-void handleRoot() {
-  String s = webpage;
-  server.send(200, "text/html", s);
 }
 
 void setFlap() {
