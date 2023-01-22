@@ -7,23 +7,18 @@ preloadImages();
 
 function updatePicture() {
     index += direction;
-    if ((index >= 0) && (index < pictures.length-1)) {
+    if ((index >= 0) && (index < pictures.length - 1)) {
         innerHTML = '<img src="./pictures/' + pictures[index] + '" onclick="toggleDirection()" width="300">'
         document.getElementById("flap").innerHTML = innerHTML;
- //       new Promise((updatePicture) => {
- //           setTimeout(updatePicture, 1000);
- //        })
-//        const promise = setTimeout(updatePicture(), 1000).then(updatePicture, null);
-
     }
-    if(index > pictures.length-1){index = pictures.length-1;}
-    if(index < 0 ){index = 0;}
+    if (index > pictures.length - 1) { index = pictures.length - 1; }
+    if (index < 0) { index = 0; }
 }
 
-function preloadImages(){
-    for(pic of pictures){
+function preloadImages() {
+    for (pic of pictures) {
         url = "./pictures/" + pic;
-        new Image().src = url; 
+        new Image().src = url;
     }
 }
 function toggleDirection() {
@@ -37,10 +32,55 @@ function toggleDirection() {
 
 function openFlap() {
     direction = 1;
+    sendSettingsToESP();
     updatePicture();
 }
 
 function closeFlap() {
     direction = -1;
+    sendSettingsToESP();
     updatePicture();
 }
+
+///// SERVER
+
+function requestSettingsFromESP() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            value = this.responseText;
+            if (value == "closed") {
+                var index = 0;
+                var direction = -1;
+            } else {
+                var index = pictures.length - 1;
+                var direction = 1;
+            }
+            updatePicture();
+        }
+    };
+    xhttp.open("GET", "request_settings", true);
+    xhttp.send();
+}
+
+function sendSettingsToESP() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            response = this.responseText;
+            if(response == "open"){
+                document.getElementById("message").innerHTML = "<br>Lüfterklappe geöffnet";
+            } else {
+                document.getElementById("message").innerHTML = "<br>Lüfterklappe geschlossen";
+            }
+        }
+    };
+    if(direction==-1){
+        value = "close";
+    } else {
+        value = "open";
+    }
+    xhttp.open("GET", "set_flap?value=" + value, true);
+    xhttp.send();
+}
+

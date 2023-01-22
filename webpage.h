@@ -1,12 +1,13 @@
+const char webpage[] PROGMEM = R"=====(
+<!DOCTYPE html>
 <html lang="de">
-
 <head>
     <meta charset='utf-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lüfterklappensteuerung</title>
     <meta name="robots" content="noindex">
-    <link rel="stylesheet" href="FanFlapControl.css">
-    <script src="FanFlapControl.js"></script>
+    <link rel="stylesheet" href="https://tobiwern.github.io/FanFlapControl/FanFlapControl.css">
+    <script src="https://tobiwern.github.io/FanFlapControl/FanFlapControl.js?random=<?php echo filemtime('https://tobiwern.github.io/FanFlapControl/FanFlapControl.js'); ?>"></script> 
 </head>
 
 <body id='body' onload="requestSettingsFromESP()">
@@ -29,5 +30,5 @@
         <button class="button" onclick="closeFlap()">Schließen</button>
     </div>
 </body>
-
 </html>
+)=====";
