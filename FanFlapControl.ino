@@ -11,10 +11,16 @@
 */
 
 #include <Servo.h>
+<<<<<<< Updated upstream
 #define pinFanLed 5  //D1
 #define pinServo 4   //D2
 #define pinPower 0   //D3
 #define pinLed 2     //D4 /InternalLED
+=======
+#define pinFan    5 //D1
+#define pinServo  4 //D2
+#define pinPower  0 //D3
+>>>>>>> Stashed changes
 int lastState = -1;
 int flapState = -2;
 unsigned long triggerMillis = 0;  //set everytime the pinFanLed is LOW (LED on fan turned on)
