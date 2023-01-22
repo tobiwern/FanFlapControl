@@ -50,6 +50,7 @@ function requestSettingsFromESP() {
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             value = this.responseText;
+            document.getElementById("message").innerHTML = "<br>Value = " + value;
             if (value == "closed") {
                 var index = 0;
                 var direction = -1;
