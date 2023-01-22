@@ -52,10 +52,10 @@ function requestSettingsFromESP() {
             value = this.responseText;
             document.getElementById("message").innerHTML = "<br>Value = " + value;
             if (value == "closed") {
-                var index = 0;
+                var index = pictures.length - 1;
                 var direction = -1;
             } else {
-                var index = pictures.length - 1;
+                var index = 0;
                 var direction = 1;
             }
             updatePicture();
