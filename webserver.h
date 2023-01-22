@@ -22,9 +22,9 @@ void handleRoot() {
 void sendSettingsToWebpage() {  //transferring ESP settings => Webpage
   String value;
   if(flapState == CLOSE){
-    value = "close";
+    value = "closed";
   } else {
-    value = "open";
+    value = "opened";
   }
   Serial.println("Sending settings: " + value);
   server.send(200, "text/plane", value);
@@ -35,10 +35,12 @@ void setFlap() {
   Serial.println("Receiving setting : " + text);
   if (text == "close") {
     flapState = CLOSE;
+    text = "closed";
   } else {
     flapState = OPEN;
+    text = "opened";
   }
-  server.send(200, "text/plane", "OK");
+  server.send(200, "text/plane", text);
 }
 
 

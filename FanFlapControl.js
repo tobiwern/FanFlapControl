@@ -70,10 +70,10 @@ function sendSettingsToESP() {
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             response = this.responseText;
-            if (response == "open") {
-                document.getElementById("message").innerHTML = "<br>Lüfterklappe geöffnet";
-            } else {
+            if (response == "closed") {
                 document.getElementById("message").innerHTML = "<br>Lüfterklappe geschlossen";
+            } else {
+                document.getElementById("message").innerHTML = "<br>Lüfterklappe geöffnet";
             }
         }
     };
