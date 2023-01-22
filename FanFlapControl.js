@@ -3,13 +3,16 @@ var gUpdateIntervalInMiliSec = 1000;
 var index = 0;
 var direction = -1;
 var basePath = "https://tobiwern.github.io/FanFlapControl"
-setInterval(updatePicture, 150);
+const OPEN = 1;
+const CLOSE = -1;
+setInterval(updatePicture, 1000); //150);
 preloadImages();
 
 function updatePicture() {
     index += direction;
+    document.getElementById("message").innerHTML = "Index = " + index;
     if ((index >= 0) && (index < pictures.length - 1)) {
-        innerHTML = '<img src="'+ basePath + '/pictures/' + pictures[index] + '" onclick="toggleDirection()" width="300">'
+        innerHTML = '<img src="'+ basePath + '/pictures/' + pictures[index] + '" onclick="toggleDirection()" width="300" height="259">'
         document.getElementById("flap").innerHTML = innerHTML;
     }
     if (index > pictures.length - 1) { index = pictures.length - 1; }
@@ -24,24 +27,24 @@ function preloadImages() {
 }
 function toggleDirection() {
     if (direction == 1) {
-        direction = -1;
+        direction = CLOSE;
     } else {
-        direction = 1;
+        direction = OPEN;
     }
-    updatePicture();
+//    updatePicture();
     sendSettingsToESP();
 }
 
 function openFlap() {
-    direction = 1;
+    direction = OPEN;
     sendSettingsToESP();
-    updatePicture();
+//    updatePicture();
 }
 
 function closeFlap() {
-    direction = -1;
+    direction = CLOSE;
     sendSettingsToESP();
-    updatePicture();
+//    updatePicture();
 }
 
 ///// SERVER
@@ -53,11 +56,11 @@ function requestSettingsFromESP() {
             value = this.responseText;
             document.getElementById("message").innerHTML = "<br>Value = " + value;
             if (value == "closed") {
-                var index = pictures.length - 1;
-                var direction = -1;
+                var index = 2; // pictures.length - 1;
+                var direction = CLOSE;
             } else {
-                var index = 0;
-                var direction = 1;
+                var index = 2; //0
+                var direction = OPEN;
             }
             updatePicture();
         }
