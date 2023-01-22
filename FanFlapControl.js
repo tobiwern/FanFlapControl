@@ -71,9 +71,9 @@ function sendSettingsToESP() {
         if (this.readyState == 4 && this.status == 200) {
             response = this.responseText;
             if (response == "closed") {
-                document.getElementById("message").innerHTML = "<br>Lüfterklappe geschlossen";
+                document.getElementById("message").innerHTML = "Lüfterklappe geschlossen";
             } else {
-                document.getElementById("message").innerHTML = "<br>Lüfterklappe geöffnet";
+                document.getElementById("message").innerHTML = "Lüfterklappe geöffnet";
             }
         }
     };
