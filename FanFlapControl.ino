@@ -21,7 +21,7 @@ int flapRequest = -1;
 unsigned long triggerMillis = 0;  //set everytime the pinFanLed is LOW (LED on fan turned on)
 unsigned long lastMillis = 0;
 unsigned long onDuration = 1000;                 //ms => 1 sec
-unsigned long detectOffTimeout = 2000;           //ms
+unsigned long detectOffTimeout = 200;           //ms
 unsigned long trailingDuration = 5 * 60 * 1000;  //ms => 5 min
 
 Servo myServo;
