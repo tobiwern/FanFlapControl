@@ -9,7 +9,7 @@ preloadImages();
 function updatePicture() {
     index += direction;
     if ((index >= 0) && (index < pictures.length - 1)) {
-        innerHTML = '<img src="'+ basePath + '/pictures/' + pictures[index] + '?raw=true" onclick="toggleDirection()" width="300">'
+        innerHTML = '<img src="'+ basePath + '/pictures/' + pictures[index] + '" onclick="toggleDirection()" width="300">'
         document.getElementById("flap").innerHTML = innerHTML;
     }
     if (index > pictures.length - 1) { index = pictures.length - 1; }
@@ -18,7 +18,7 @@ function updatePicture() {
 
 function preloadImages() {
     for (pic of pictures) {
-        url = basePath + "/pictures/" + pic + "?raw=true";
+        url = basePath + "/pictures/" + pic;
         new Image().src = url;
     }
 }
