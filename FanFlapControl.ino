@@ -17,6 +17,7 @@
 #define pinLed 2     //D4 /InternalLED
 int lastState = -1;
 int flapState = -2;
+int flapRequest = -1;
 unsigned long triggerMillis = 0;  //set everytime the pinFanLed is LOW (LED on fan turned on)
 unsigned long lastMillis = 0;
 unsigned long onDuration = 1000;                 //ms => 1 sec
@@ -64,7 +65,7 @@ void loop() {
   // Your code here
   int fanState = digitalRead(pinFanLed);
   unsigned long now = millis();
-  if (fanState == FAN_ON) {
+  if ((fanState == FAN_ON) || (flapRequest == OPEN)) {
     triggerMillis = now;
     flapState = OPEN;  //while there are "turn on" pulses... (LED iss pulsed)
   }
@@ -72,11 +73,6 @@ void loop() {
     //    Serial.println("now (" + String(now) + ") - triggerMillis (" + triggerMillis + " > detectOffTimeout (" + detectOffTimeout + ")");
     flapState = CLOSE;  //if no more "turn on" pulses...
   }
-  //if (flapState == CLOSE) {
-  //  Serial.println("CLOSE");
-  //} else {
-  //  Serial.println("OPEN");
-  //}
   if (flapState != lastState) {
     Serial.println("flapState = " + String(flapState));
     lastState = flapState;

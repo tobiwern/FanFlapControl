@@ -29,6 +29,7 @@ function toggleDirection() {
         direction = 1;
     }
     updatePicture();
+    sendSettingsToESP();
 }
 
 function openFlap() {

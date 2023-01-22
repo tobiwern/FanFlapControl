@@ -34,10 +34,10 @@ void setFlap() {
   String text = server.arg("value");
   Serial.println("Receiving setting : " + text);
   if (text == "close") {
-    flapState = CLOSE;
+    flapRequest = CLOSE;
     text = "closed";
   } else {
-    flapState = OPEN;
+    flapRequest = OPEN;
     text = "opened";
   }
   server.send(200, "text/plane", text);
