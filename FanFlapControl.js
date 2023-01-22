@@ -2,13 +2,14 @@ var pictures = ["flap0.png", "flap45.png", "flap90.png", "flap135.png", "flap180
 var gUpdateIntervalInMiliSec = 1000;
 var index = 0;
 var direction = -1;
+var basePath = "https://github.com/tobiwern/FanFlapControl/blob/main"
 setInterval(updatePicture, 150);
 preloadImages();
 
 function updatePicture() {
     index += direction;
     if ((index >= 0) && (index < pictures.length - 1)) {
-        innerHTML = '<img src="./pictures/' + pictures[index] + '" onclick="toggleDirection()" width="300">'
+        innerHTML = '<img src="'+ basePath + '/pictures/' + pictures[index] + '?raw=true" onclick="toggleDirection()" width="300">'
         document.getElementById("flap").innerHTML = innerHTML;
     }
     if (index > pictures.length - 1) { index = pictures.length - 1; }
@@ -17,7 +18,7 @@ function updatePicture() {
 
 function preloadImages() {
     for (pic of pictures) {
-        url = "./pictures/" + pic;
+        url = basePath + "/pictures/" + pic + "?raw=true";
         new Image().src = url;
     }
 }
@@ -68,14 +69,14 @@ function sendSettingsToESP() {
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             response = this.responseText;
-            if(response == "open"){
+            if (response == "open") {
                 document.getElementById("message").innerHTML = "<br>Lüfterklappe geöffnet";
             } else {
                 document.getElementById("message").innerHTML = "<br>Lüfterklappe geschlossen";
             }
         }
     };
-    if(direction==-1){
+    if (direction == -1) {
         value = "close";
     } else {
         value = "open";
