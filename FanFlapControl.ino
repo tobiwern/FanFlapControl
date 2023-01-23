@@ -52,7 +52,7 @@ void setup() {
   }
   WiFi.hostname("FanFlapControl");
   // Your setup code
-  myServo.attach(pinServo);
+  myServo.attach(pinServo, 600, 2300); //500, 2400
   pinMode(pinFanLed, INPUT_PULLUP);
   pinMode(pinLed, OUTPUT);
   pinMode(pinPower, OUTPUT);  //in order to save power when
@@ -62,6 +62,8 @@ void setup() {
 
 void loop() {
   //  ArduinoOTA.handle();
+  server.handleClient();
+
   // Your code here
   int fanState = digitalRead(pinFanLed);
   unsigned long now = millis();
@@ -92,5 +94,4 @@ void loop() {
     digitalWrite(pinPower, LOW);  //turn power off
     digitalWrite(pinLed, HIGH);   //lowActive LED
   }
-  server.handleClient();
 }
