@@ -32,16 +32,19 @@ function toggleDirection() {
         direction = OPEN;
     }
     sendSettingsToESP();
+    updatePicture();
 }
 
 function openFlap() {
     direction = OPEN;
     sendSettingsToESP();
+    updatePicture();
 }
 
 function closeFlap() {
     direction = CLOSE;
     sendSettingsToESP();
+    updatePicture();
 }
 
 ///// SERVER
