@@ -1,4 +1,4 @@
-var pictures = ["flap0.png", "flap45.png", "flap90.png", "flap135.png", "flap180.png"];
+var pictures = ["flap0_300.png", "flap45_300.png", "flap90_300.png", "flap135_300.png", "flap180_300.png"];
 var gUpdateIntervalInMiliSec = 1000;
 var index = 0;
 var direction = -1;
