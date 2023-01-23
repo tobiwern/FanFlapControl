@@ -1,5 +1,5 @@
 var pictures = ["flap0_300.png", "flap45_300.png", "flap90_300.png", "flap135_300.png", "flap180_300.png"];
-var gUpdateIntervalInMiliSec = 1000;
+var gUpdateIntervalInMiliSec = 150;
 var index = 0;
 var direction = -1;
 var basePath = "https://tobiwern.github.io/FanFlapControl"
