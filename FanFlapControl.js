@@ -51,13 +51,15 @@ function requestSettingsFromESP() {
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             value = this.responseText;
-            document.getElementById("message").innerHTML = "<br>Value = " + value;
+//            document.getElementById("message").innerHTML = "<br>Value = " + value;
             if (value == "closed") {
                 index = 0; 
                 direction = CLOSE;
+                document.getElementById("message").innerHTML = "Lüfterklappe geschlossen";
             } else {
                 index = pictures.length - 1;
                 direction = OPEN;
+                document.getElementById("message").innerHTML = "Lüfterklappe geöffnet";
             }
             updatePicture();
         }
