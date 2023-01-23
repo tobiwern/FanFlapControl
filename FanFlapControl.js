@@ -25,25 +25,26 @@ function preloadImages() {
     }
 }
 function toggleDirection() {
+    var direction;
     if (gDirection == 1) {
-        gDirection = CLOSE;
+        direction = CLOSE;
     } else {
-        gDirection = OPEN;
+        direction = OPEN;
     }
-    sendSettingsToESP();
-    updatePicture();
+    sendSettingsToESP(direction);
+//    updatePicture();
 }
 
 function openFlap() {
-    gDirection = OPEN;
-    sendSettingsToESP();
-    updatePicture();
+//    gDirection = OPEN;
+    sendSettingsToESP(OPEN);
+//    updatePicture();
 }
 
 function closeFlap() {
-    gDirection = CLOSE;
-    sendSettingsToESP();
-    updatePicture();
+//    gDirection = CLOSE;
+    sendSettingsToESP(CLOSE);
+//    updatePicture();
 }
 
 ///// SERVER
@@ -70,19 +71,21 @@ function requestSettingsFromESP() {
     xhttp.send();
 }
 
-function sendSettingsToESP() {
+function sendSettingsToESP(direction) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             response = this.responseText;
             if (response == "closed") {
                 document.getElementById("message").innerHTML = "Lüfterklappe geschlossen";
+                gDirection = CLOSE;
             } else {
                 document.getElementById("message").innerHTML = "Lüfterklappe geöffnet";
+                gDirection = OPEN;
             }
         }
     };
-    if (gDirection == -1) {
+    if (direction == CLOSE) {
         value = "close";
     } else {
         value = "open";
