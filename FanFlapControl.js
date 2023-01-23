@@ -31,20 +31,17 @@ function toggleDirection() {
     } else {
         direction = OPEN;
     }
-//    updatePicture();
     sendSettingsToESP();
 }
 
 function openFlap() {
     direction = OPEN;
     sendSettingsToESP();
-//    updatePicture();
 }
 
 function closeFlap() {
     direction = CLOSE;
     sendSettingsToESP();
-//    updatePicture();
 }
 
 ///// SERVER
@@ -56,11 +53,11 @@ function requestSettingsFromESP() {
             value = this.responseText;
             document.getElementById("message").innerHTML = "<br>Value = " + value;
             if (value == "closed") {
-                var index = 2; // pictures.length - 1;
-                var direction = CLOSE;
+                index = 2; // pictures.length - 1;
+                direction = CLOSE;
             } else {
-                var index = 2; //0
-                var direction = OPEN;
+                index = 2; //0
+                direction = OPEN;
             }
             updatePicture();
         }
