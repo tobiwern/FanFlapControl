@@ -1,48 +1,48 @@
-var pictures = ["flap0_300.png", "flap45_300.png", "flap90_300.png", "flap135_300.png", "flap180_300.png"];
+var gPictures = ["flap0_300.png", "flap45_300.png", "flap90_300.png", "flap135_300.png", "flap180_300.png"];
 var gUpdateIntervalInMiliSec = 150;
-var index = 0;
-var direction = -1;
-var basePath = "https://tobiwern.github.io/FanFlapControl"
+var gIndex = 0;
+var gDirection = -1;
+var gBasePath = "https://tobiwern.github.io/FanFlapControl"
 const OPEN = 1;
 const CLOSE = -1;
-setInterval(updatePicture, 1000); //150);
+setInterval(updatePicture, gUpdateIntervalInMiliSec); 
 preloadImages();
 
 function updatePicture() {
 //    document.getElementById("message").innerHTML = "Index = " + index;
-    if ((index >= 0) && (index < pictures.length - 1)) {
-        innerHTML = '<img src="'+ basePath + '/pictures/' + pictures[index] + '" onclick="toggleDirection()" width="300" height="259">'
+    if ((gIndex >= 0) && (gIndex < gPictures.length - 1)) {
+        innerHTML = '<img src="'+ gBasePath + '/pictures/' + gPictures[gIndex] + '" onclick="toggleDirection()" width="300" height="259">'
         document.getElementById("flap").innerHTML = innerHTML;
     }
-    index += direction;
-    if (index > pictures.length - 1) { index = pictures.length - 1; }
-    if (index < 0) { index = 0; }
+    gIndex += gDirection;
+    if (gIndex > gPictures.length - 1) { gIndex = gPictures.length - 1; }
+    if (gIndex < 0) { gIndex = 0; }
 }
 
 function preloadImages() {
-    for (pic of pictures) {
-        url = basePath + "/pictures/" + pic;
+    for (pic of gPictures) {
+        url = gBasePath + "/pictures/" + pic;
         new Image().src = url;
     }
 }
 function toggleDirection() {
-    if (direction == 1) {
-        direction = CLOSE;
+    if (gDirection == 1) {
+        gDirection = CLOSE;
     } else {
-        direction = OPEN;
+        gDirection = OPEN;
     }
     sendSettingsToESP();
     updatePicture();
 }
 
 function openFlap() {
-    direction = OPEN;
+    gDirection = OPEN;
     sendSettingsToESP();
     updatePicture();
 }
 
 function closeFlap() {
-    direction = CLOSE;
+    gDirection = CLOSE;
     sendSettingsToESP();
     updatePicture();
 }
@@ -56,12 +56,12 @@ function requestSettingsFromESP() {
             value = this.responseText;
 //            document.getElementById("message").innerHTML = "<br>Value = " + value;
             if (value == "closed") {
-                index = 0; 
-                direction = CLOSE;
+                gIndex = 0; 
+                gDirection = CLOSE;
                 document.getElementById("message").innerHTML = "Lüfterklappe geschlossen";
             } else {
-                index = pictures.length - 1;
-                direction = OPEN;
+                gIndex = gPictures.length - 1;
+                gDirection = OPEN;
                 document.getElementById("message").innerHTML = "Lüfterklappe geöffnet";
             }
             updatePicture();
@@ -83,7 +83,7 @@ function sendSettingsToESP() {
             }
         }
     };
-    if (direction == -1) {
+    if (gDirection == -1) {
         value = "close";
     } else {
         value = "open";
