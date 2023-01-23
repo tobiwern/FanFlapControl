@@ -9,7 +9,7 @@ setInterval(updatePicture, 1000); //150);
 preloadImages();
 
 function updatePicture() {
-    document.getElementById("message").innerHTML = "Index = " + index;
+//    document.getElementById("message").innerHTML = "Index = " + index;
     if ((index >= 0) && (index < pictures.length - 1)) {
         innerHTML = '<img src="'+ basePath + '/pictures/' + pictures[index] + '" onclick="toggleDirection()" width="300" height="259">'
         document.getElementById("flap").innerHTML = innerHTML;
