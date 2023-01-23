@@ -9,8 +9,7 @@ setInterval(updatePicture, gUpdateIntervalInMiliSec);
 preloadImages();
 
 function updatePicture() {
-//    document.getElementById("message").innerHTML = "Index = " + index;
-    if ((gIndex >= 0) && (gIndex < gPictures.length - 1)) {
+    if ((gIndex >= 0) && (gIndex < gPictures.length)) {
         innerHTML = '<img src="'+ gBasePath + '/pictures/' + gPictures[gIndex] + '" onclick="toggleDirection()" width="300" height="259">'
         document.getElementById("flap").innerHTML = innerHTML;
     }
