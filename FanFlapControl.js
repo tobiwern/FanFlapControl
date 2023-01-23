@@ -9,12 +9,12 @@ setInterval(updatePicture, 1000); //150);
 preloadImages();
 
 function updatePicture() {
-    index += direction;
     document.getElementById("message").innerHTML = "Index = " + index;
     if ((index >= 0) && (index < pictures.length - 1)) {
         innerHTML = '<img src="'+ basePath + '/pictures/' + pictures[index] + '" onclick="toggleDirection()" width="300" height="259">'
         document.getElementById("flap").innerHTML = innerHTML;
     }
+    index += direction;
     if (index > pictures.length - 1) { index = pictures.length - 1; }
     if (index < 0) { index = 0; }
 }
@@ -53,10 +53,10 @@ function requestSettingsFromESP() {
             value = this.responseText;
             document.getElementById("message").innerHTML = "<br>Value = " + value;
             if (value == "closed") {
-                index = 2; // pictures.length - 1;
+                index = 0; 
                 direction = CLOSE;
             } else {
-                index = 2; //0
+                index = pictures.length - 1;
                 direction = OPEN;
             }
             updatePicture();
