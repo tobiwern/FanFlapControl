@@ -40,7 +40,18 @@ void setFlap() {
     flapRequest = OPEN;
     text = "opened";
   }
-  server.send(200, "text/plane", text);
+  serverAcknowledge = true;  
+}
+
+void serverSendFlapState(){
+  String response;
+  if(flapState == CLOSE){
+    response = "closed";
+  } else {
+    response = "opened";
+  }
+  server.send(200, "text/plane", response);
+  serverAcknowledge = false; //reset
 }
 
 

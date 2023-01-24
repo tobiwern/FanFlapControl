@@ -18,10 +18,11 @@
 int lastState = -1;
 int flapState = -2;
 int flapRequest = -1;
+bool serverAcknowledge = false;
 unsigned long triggerMillis = 0;  //set everytime the pinFanLed is LOW (LED on fan turned on)
 unsigned long lastMillis = 0;
 unsigned long onDuration = 1000;                 //ms => 1 sec
-unsigned long detectOffTimeout = 200;           //ms
+unsigned long detectOffTimeout = 400;            //ms
 unsigned long trailingDuration = 5 * 60 * 1000;  //ms => 5 min
 
 Servo myServo;
@@ -35,14 +36,15 @@ Servo myServo;
 
 #include "webpage.h"
 #include "webserver.h"  //separate file for webserver functions
+#include "credentials.h"
 
 void setup() {
   Serial.begin(115200);
-  while (!Serial) {;}
+  while (!Serial) { ; }
 
   Serial.println("Booting");
 
-  //  setupOTA("FanFlapControl", mySSID, myPASSWORD);
+  setupOTA("FanFlapControl", mySSID, myPASSWORD);
   WiFiManager wm;
   //  wm.resetSettings();
   if (wm.autoConnect("FanFlapControl")) {
@@ -52,7 +54,7 @@ void setup() {
   }
   WiFi.hostname("FanFlapControl");
   // Your setup code
-  myServo.attach(pinServo, 600, 2300); //500, 2400
+  myServo.attach(pinServo, 600, 2300);  //500, 2400
   pinMode(pinFanLed, INPUT_PULLUP);
   pinMode(pinLed, OUTPUT);
   pinMode(pinPower, OUTPUT);  //in order to save power when
@@ -61,7 +63,7 @@ void setup() {
 }
 
 void loop() {
-  //  ArduinoOTA.handle();
+  ArduinoOTA.handle();
   server.handleClient();
 
   // Your code here
@@ -94,4 +96,5 @@ void loop() {
     digitalWrite(pinPower, LOW);  //turn power off
     digitalWrite(pinLed, HIGH);   //lowActive LED
   }
+  if (serverAcknowledge) { serverSendFlapState(); }
 }
