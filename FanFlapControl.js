@@ -6,6 +6,7 @@ var gBasePath = "https://tobiwern.github.io/FanFlapControl"
 const OPEN = 1;
 const CLOSE = -1;
 setInterval(updatePicture, gUpdateIntervalInMiliSec); 
+setInterval(requestSettingsFromESP, 1000*5); 
 preloadImages();
 
 function updatePicture() {
