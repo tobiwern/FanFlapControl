@@ -11,26 +11,26 @@
 */
 
 #include <Servo.h>
-#define pinFanLed 5  //D1
+#define pinFan 5  //D1
 #define pinServo 4   //D2
 #define pinPower 0   //D3
 #define pinLed 2     //D4 /InternalLED
+int fanState = -1;
 int lastState = -1;
 int flapState = -2;
 int flapRequest = -1;
 bool serverAcknowledge = false;
-unsigned long triggerMillis = 0;  //set everytime the pinFanLed is LOW (LED on fan turned on)
+unsigned long triggerMillis = 0;  //set everytime the pinFan is LOW (LED on fan turned on)
 unsigned long lastMillis = 0;
-unsigned long onDuration = 1000;                 //ms => 1 sec
-unsigned long detectOffTimeout = 400;            //ms
-unsigned long trailingDuration = 5 * 60 * 1000;  //ms => 5 min
+unsigned long onDuration = 1000;                 //ms => 1 sec, How long power is supplied
+unsigned long detectOffTimeout = 100;            //ms => 100ms, detect the fan was turned off
 
 Servo myServo;
 #include <WiFiManager.h>  // https://github.com/tzapu/WiFiManager
 
 #include <OTA.h>
 
-#define FAN_ON LOW  //pinFanLed pulled low
+#define FAN_ON LOW  //pinFan pulled low
 #define CLOSE 0
 #define OPEN 1
 
@@ -55,11 +55,17 @@ void setup() {
   WiFi.hostname("FanFlapControl");
   // Your setup code
   myServo.attach(pinServo, 600, 2300);  //500, 2400
-  pinMode(pinFanLed, INPUT_PULLUP);
+  pinMode(pinFan, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(pinFan), fanTurnedOn, CHANGE); //as long as there is the 50Hz toggling the fan is turned on
   pinMode(pinLed, OUTPUT);
   pinMode(pinPower, OUTPUT);  //in order to save power when
   lastMillis = millis();
   startWebServer();
+}
+
+ICACHE_RAM_ATTR void fanTurnedOn() {
+  fanState = FAN_ON;
+  triggerMillis = millis();  //set everytime the pinFan is LOW (LED on fan turned on)
 }
 
 void loop() {
@@ -67,15 +73,16 @@ void loop() {
   server.handleClient();
 
   // Your code here
-  int fanState = digitalRead(pinFanLed);
   unsigned long now = millis();
   if ((fanState == FAN_ON) || (flapRequest == OPEN)) {
-    triggerMillis = now;
     flapState = OPEN;  //while there are "turn on" pulses... (LED iss pulsed)
+    if(flapRequest == OPEN){triggerMillis = now;}
+    if (serverAcknowledge) { serverSendFlapState(); }
   }
   if ((now - triggerMillis) > detectOffTimeout) {  //if there was no more on pulse since a while => fan is off => close the lid
     //    Serial.println("now (" + String(now) + ") - triggerMillis (" + triggerMillis + " > detectOffTimeout (" + detectOffTimeout + ")");
     flapState = CLOSE;  //if no more "turn on" pulses...
+    if (serverAcknowledge) { serverSendFlapState(); }
   }
   if (flapState != lastState) {
     Serial.println("flapState = " + String(flapState));
@@ -96,5 +103,4 @@ void loop() {
     digitalWrite(pinPower, LOW);  //turn power off
     digitalWrite(pinLed, HIGH);   //lowActive LED
   }
-  if (serverAcknowledge) { serverSendFlapState(); }
 }
