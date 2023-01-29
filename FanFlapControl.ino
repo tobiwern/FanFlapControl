@@ -23,12 +23,12 @@ bool serverAcknowledge = false;
 unsigned long triggerMillis = 0;  //set everytime the pinFan is LOW (LED on fan turned on)
 unsigned long lastMillis = 0;
 unsigned long onDuration = 1000;                 //ms => 1 sec, How long power is supplied
-unsigned long detectOffTimeout = 100;            //ms => 100ms, detect the fan was turned off
+unsigned long detectOffTimeout = 500;            //ms => 100ms, detect the fan was turned off
 
 Servo myServo;
 #include <WiFiManager.h>  // https://github.com/tzapu/WiFiManager
 
-#include <OTA.h>
+//#include <OTA.h>
 
 #define FAN_ON LOW  //pinFan pulled low
 #define CLOSE 0
@@ -44,7 +44,7 @@ void setup() {
 
   Serial.println("Booting");
 
-  setupOTA("FanFlapControl", mySSID, myPASSWORD);
+  //setupOTA("FanFlapControl", mySSID, myPASSWORD);
   WiFiManager wm;
   //  wm.resetSettings();
   if (wm.autoConnect("FanFlapControl")) {
@@ -69,7 +69,7 @@ ICACHE_RAM_ATTR void fanTurnedOn() {
 }
 
 void loop() {
-  ArduinoOTA.handle();
+//  ArduinoOTA.handle();
   server.handleClient();
 
   // Your code here
@@ -79,15 +79,15 @@ void loop() {
     if(flapRequest == OPEN){triggerMillis = now;}
     if (serverAcknowledge) { serverSendFlapState(); }
   }
-  if ((now - triggerMillis) > detectOffTimeout) {  //if there was no more on pulse since a while => fan is off => close the lid
-    //    Serial.println("now (" + String(now) + ") - triggerMillis (" + triggerMillis + " > detectOffTimeout (" + detectOffTimeout + ")");
+  if ((now - triggerMillis + 10) > detectOffTimeout) {  //if there was no more on pulse since a while => fan is off => close the lid, due to the interrupt the trigger millis could be larger then now => leaving the allowed unsigned long range (-1 => very LARGE number)! => + 10 prevents this!
+    Serial.println("now (" + String(now) + ") - triggerMillis (" + triggerMillis + ") > detectOffTimeout (" + detectOffTimeout + ")");
     flapState = CLOSE;  //if no more "turn on" pulses...
     if (serverAcknowledge) { serverSendFlapState(); }
   }
   if (flapState != lastState) {
     Serial.println("flapState = " + String(flapState));
     lastState = flapState;
-    lastMillis = now;  //reset timer
+    lastMillis = now;  //power timer
     Serial.println("Turning power on");
     digitalWrite(pinPower, HIGH);  //turn power on
     digitalWrite(pinLed, LOW);     //lowActive LED
